@@ -1,0 +1,14 @@
+{
+  "development": {
+    "dialect": "sqlite",
+    "storage": "../database/minha_loja.db"
+  },
+  "test": {
+    "dialect": "sqlite", 
+    "storage": ":memory:"
+  },
+  "production": {
+    "dialect": "sqlite",
+    "storage": "../database/minha_loja_prod.db"
+  }
+}
