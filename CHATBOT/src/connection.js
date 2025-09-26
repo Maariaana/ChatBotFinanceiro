@@ -1,8 +1,12 @@
-import makeWASocket, { useMultiFileAuthState, fetchLatestBaileysVersion, DisconnectReason } from "@whiskeysockets/baileys";
+import makeWASocket, { 
+  useMultiFileAuthState, 
+  fetchLatestBaileysVersion, 
+  DisconnectReason 
+} from "@whiskeysockets/baileys";
 import path from "path";
 import pino from "pino";
 import { fileURLToPath } from "url";
-import { question, onlyNumbers } from "./utils/index.js";
+import qrcode from "qrcode-terminal"; // 👈 precisa instalar: npm install qrcode-terminal
 
 // Em ESM, não existe __dirname por padrão, precisamos recriar:
 const __filename = fileURLToPath(import.meta.url);
@@ -16,34 +20,27 @@ export async function connect() {
   const { version } = await fetchLatestBaileysVersion();
 
   const socket = makeWASocket({
-    printQRInTerminal: false,
+    printQRInTerminal: false, // vamos exibir manualmente
     version,
     logger: pino({ level: "error" }),
     auth: state,
     browser: ["ChatBotFinanceiro", "Chrome", "3.0"],
   });
 
-  if (!socket.authState.creds.registered) {
-    const phoneNumber = await question("Informe seu número de telefone: ");
-
-    if (!phoneNumber) {
-      throw new Error("Número de telefone inválido!");
-    }
-
-    const code = await socket.requestPairingCode(onlyNumbers(phoneNumber));
-
-    console.log(`Código de pareamento: ${code}`);
-  }
-
+  // Exibe o QR Code no terminal
   socket.ev.on("connection.update", (update) => {
-    const { connection, lastDisconnect } = update;
+    const { connection, lastDisconnect, qr } = update;
+
+    if (qr) {
+      qrcode.generate(qr, { small: true });
+    }
 
     if (connection === "close") {
       const shouldReconnect =
         lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut;
 
       if (shouldReconnect) {
-        connect(); // chama de novo
+        connect(); // reconecta
       }
     }
   });
