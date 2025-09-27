@@ -1,4 +1,4 @@
-const { PREFIX } = require('../config');
+const { PREFIX } = require('../../config');
 
 module.exports = {
     name: 'comando',

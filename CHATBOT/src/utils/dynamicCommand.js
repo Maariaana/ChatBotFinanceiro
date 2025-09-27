@@ -8,9 +8,10 @@ import {
 import { findCommandImport } from "./index.js";
 
 export const dynamicCommand = async (paramsHandler) => {
+    console.log('dynamicCommand chamado com:', paramsHandler.commandName);
     const { commandName, prefix, sendWarningReply, sendErrorReply } = paramsHandler;
 
-    const { type, command } = findCommandImport(commandName);
+    const { type, command } = await findCommandImport(commandName);
 
     if (!verifyPrefix(prefix) || !hasTypeOrCommand({ type, command })) {
         return;

@@ -1,11 +1,13 @@
-// import { send } from "process";
 import { extractDataFromMessage, baileysIs, download } from "./index.js";
 import { BOT_EMOJI } from "../config.js";
 import fs from "fs";
 
 export const loadCommonFunctions = ({ socket, webMessage }) => {
-    const { remoteJid, prefix, commandName, args, userJid, isReply, replyJid } =
-        extractDataFromMessage(webMessage);
+    const data = extractDataFromMessage(webMessage);
+    console.log('Dados extraídos:', data);
+
+    const { remoteJid, prefix, commandName, args, userJid, isReply, replyJid } = data;
+        
 
     const isImage = baileysIs(webMessage, "image");
     const isVideo = baileysIs(webMessage, "video");

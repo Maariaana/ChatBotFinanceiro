@@ -1,12 +1,13 @@
 
-import { PREFIX } from '../config.js';
+import { PREFIX } from "../../config.js";
 
 export default {
     name: "ping",
     description: "Verificar se o bot está online",
     commands: ["ping"],
-    usage: `&{PREFIX}ping`,
+    usage: `${PREFIX}ping`,
     handle: async ({ sendReply, sendReact}) => {
+        console.log('Executando comando ping!');
         await sendReact("🏓");
         await sendReply("🏓 Pong!");
     },

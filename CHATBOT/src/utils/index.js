@@ -3,7 +3,7 @@ import readline from "readline";
 import path from "path";
 import { writeFile } from "fs/promises";
 import fs from "fs";
-import { TEMP_DIR, COMMANDS_DIR } from "../config.js";
+import { TEMP_DIR, COMMANDS_DIR, PREFIX } from "../config.js";
 
 export function question(message) {
   const rl = readline.createInterface({
@@ -56,7 +56,7 @@ export function extractDataFromMessage(webMessage) {
   const [command, ...args] = fullMessage.split(" ");
   const prefix = command.charAt(0);
 
-  const commandWithoutPrefix = command.replace(new RegExp(`^[${prefix}]+`), "");
+  const commandWithoutPrefix = command.replace(new RegExp(`^[${PREFIX}]+`), "");
 
   return {
     remoteJid: webMessage?.key?.remoteJid,
@@ -129,14 +129,18 @@ export async function download(webMessage, filename, context, extension) {
   return filePath;
 }
 
-export function findCommandImport(commandName) {
-  const commandImports = readCommandImports();
+export async function findCommandImport(commandName) {
+  const commandImports = await readCommandImports();
+
+  console.log("🔍 Comandos carregados:", Object.keys(commandImports));
 
   let typeReturn = "";
   let targetCommandReturn = null;
 
   for (const [type, commands] of Object.entries(commandImports)) {
     if (!commands.length) continue;
+
+    console.log(`📂 Verificando pasta ${type}:`, commands.map(c => c.name));
 
     const targetCommand = commands.find((cmd) =>
       cmd.commands.map((c) => formatCommand(c)).includes(commandName)
@@ -155,7 +159,7 @@ export function findCommandImport(commandName) {
   };
 }
 
-export function readCommandImports() {
+export async function readCommandImports() {
   const subdirectories = fs
     .readdirSync(COMMANDS_DIR, { withFileTypes: true })
     .filter((directory) => directory.isDirectory())
@@ -173,7 +177,15 @@ export function readCommandImports() {
           (file.endsWith(".js") || file.endsWith(".ts"))
       );
 
-    commandImports[subdir] = files;
+    // Importação dinâmica ESM
+    const importedFiles = [];
+    for (const file of files) {
+      const filePath = path.join(subdirectoryPath, file);
+      const module = await import(filePath.startsWith("/") || filePath.startsWith("."
+        ) ? `file://${filePath}` : `file:///${filePath.replace(/\\/g, "/")}`);
+      importedFiles.push(module.default || module);
+    }
+    commandImports[subdir] = importedFiles;
   }
 
   return commandImports;

@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const PREFIX = "/";
+export const PREFIX = "!";
 export const BOT_EMOJI = "🤖";
 export const BOT_NAME = "Bot";
 export const BOT_NUMBER = "";
