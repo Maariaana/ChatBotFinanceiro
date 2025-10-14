@@ -1,12 +1,13 @@
-import makeWASocket, { 
-  useMultiFileAuthState, 
-  fetchLatestBaileysVersion, 
-  DisconnectReason 
+import makeWASocket, {
+  useMultiFileAuthState,
+  fetchLatestBaileysVersion,
+  DisconnectReason
 } from "@whiskeysockets/baileys";
 import path from "path";
 import pino from "pino";
 import { fileURLToPath } from "url";
 import qrcode from "qrcode-terminal";
+import { setupMessageHandler } from "./utils/messageProcessor.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,6 +41,9 @@ export async function connect() {
       if (shouldReconnect) {
         connect();
       }
+    } else if (connection === "open") {
+      console.log('✅ Conectado ao WhatsApp!');
+      setupMessageHandler(socket);
     }
   });
 
