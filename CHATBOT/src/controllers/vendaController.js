@@ -1,9 +1,11 @@
-import sendMessage from "../utils/sendMessage.js";
+import sendMessage from "../services/messageSender.js";
 
-//processar compras
-async function processarCompra(socket, text, from) {
+ //NÃO É COMPRA! É VENDA!!!!! MUDA ISSO!!!!!
+ 
+//processar vendas
+async function processarVenda(socket, text, from) {
     try {
-        console.log('🛒 Processando compra...');
+        console.log('🛒 Processando Venda...');
 
         const nomeMatch = text.match(/(.+?)\s+(comprou|venda|compra)/i);
         const valorMatch = text.match(/(\d+(?:[.,]\d+)?)/);
@@ -20,12 +22,12 @@ async function processarCompra(socket, text, from) {
         const parcelas = parcelasMatch ? parseInt(parcelasMatch[1]) : 1;
         const diaVencimento = vencimentoMatch ? parseInt(vencimentoMatch[1]) : 10;
 
-        console.log('📋 Compra detectada:', { nomeCliente, valor, parcelas, diaVencimento });
+        console.log('📋 Venda detectada:', { nomeCliente, valor, parcelas, diaVencimento });
 
         //SALVAR NO BANCO DEPOIS!!!!!!!!!
 
 
-        let resposta = `✅ *Compra registrada!*\n\n`;
+        let resposta = `✅ *Venda registrada!*\n\n`;
         resposta += `👤 *Cliente:* ${nomeCliente}\n`;
         resposta += `💰 *Valor:* R$ ${valor.toFixed(2)}\n`;
 
@@ -40,9 +42,9 @@ async function processarCompra(socket, text, from) {
         await sendMessage(socket, from, resposta);
 
     } catch (error) {
-        console.error('❌ Erro ao processar compra:', error);
-        await sendMessage(socket, from, '❌ Erro ao registrar compra. Verifique o formato.');
+        console.error('❌ Erro ao processar Venda:', error);
+        await sendMessage(socket, from, '❌ Erro ao registrar Venda. Verifique o formato.');
     }
 }
 
-export default processarCompra;
+export default processarVenda;

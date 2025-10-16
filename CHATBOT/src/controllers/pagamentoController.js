@@ -1,4 +1,4 @@
-import sendMessage from "../utils/sendMessage.js";
+import sendMessage from "../services/messageSender.js";
 
 //processar pagamentos
 async function processarPagamento(socket, text, from) {
