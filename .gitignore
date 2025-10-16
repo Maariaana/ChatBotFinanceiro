@@ -140,3 +140,4 @@ vite.config.ts.timestamp-*
 
 
 /CHATBOT/assets/auth/
+/CHATBOT/organizacao.txt

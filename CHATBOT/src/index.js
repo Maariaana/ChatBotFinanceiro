@@ -1,10 +1,12 @@
-import { connect } from "./connection.js";
-import { load } from "./loader.js";
+import { connect } from "./services/connection.js";
+import { setupMessageHandler } from "./services/messageProcessor.js";
 
-async function start() {
-    const socket = await connect();
+async function startApp() {
+  const socket = await connect();
 
-    load(socket);
+  socket.ev.on('messages.upsert', async ({ messages }) => {
+    await setupMessageHandler({ socket, messages });
+  });
 }
 
-start();
+startApp();
