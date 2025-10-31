@@ -1,6 +1,6 @@
 import sendMessage from "./messageSender.js";
 import processarPagamento from "../controllers/pagamentoController.js";
-import processarVenda from "../controllers/vendaController.js";
+import VendaController from "../controllers/vendaController.js";
 
 //processar mensagens
 function setupMessageHandler(socket) {
@@ -29,9 +29,10 @@ function extractText(message) {
 async function processarMensagemNatural(socket, text, from) {
     const mensagem = text.toLowerCase();
 
-    //VENDA
+    // VENDA
     if (mensagem.includes('comprou') || mensagem.includes('venda') || mensagem.includes('compra')) {
-        await processarVenda(socket, text, from);
+        const vendaController = new VendaController();
+        await vendaController.processarVenda(socket, text, from); // ✅ MÉTODO CORRETO
     }
 
     //PAGAMENTO
@@ -41,22 +42,35 @@ async function processarMensagemNatural(socket, text, from) {
 
     //Saudação
     else if (mensagem.includes('oi') || mensagem.includes('olá') || mensagem.includes('ola')) {
-        await sendMessage(socket, from, 'Olá! 😊 Sou seu assistente financeiro.\n\nExemplos:\n• "Maria comprou 400, 4 parcelas"\n• "João pagou 150"');
+        await sendMessage(socket, from,
+            'Olá! 😊 Sou seu assistente financeiro.\n\n' +
+            'Exemplos:\n• "Maria comprou 400, 4 parcelas"\n' +
+            '• "João pagou 150"'
+        );
     }
 
     //Ajuda
     else if (mensagem.includes('ajuda') || mensagem.includes('help')) {
-        await sendMessage(socket, from, '💡 *Como usar:*\n\n📦 Registrar venda:\n"Maria comprou 300, 2 parcelas, vencimento 10"\n\n💰 Registrar pagamento:\n"João pagou 150"');
+        await sendMessage(socket, from,
+            '💡 *Como usar:*\n\n' +
+            '📦 Registrar venda:\n"Maria comprou 300, 2 parcelas, vencimento 10"\n\n' +
+            '💰 Registrar pagamento:\n"João pagou 150"'
+        );
     }
 
     //Não entendeu
     else {
-        await sendMessage(socket, from, '🤔 Não entendi. Diga algo como:\n• "Maria comprou 300, 2x"\n• "João pagou 150"\n• Digite "ajuda" para mais opções');
+        await sendMessage(socket, from,
+            '🤔 Não entendi. Diga algo como:\n' +
+            '• "Maria comprou 300, 2x"\n' +
+            '• "João pagou 150"\n' +
+            '• Digite "ajuda" para mais opções'
+        );
     }
 }
 
 
-export{
+export {
     setupMessageHandler,
     extractText,
     processarMensagemNatural
