@@ -23,10 +23,6 @@ const Venda = sequelize.define('Venda', {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW
   },
-  produto_descricao: {
-    type: DataTypes.TEXT,
-    allowNull: true
-  },
   tipo_pagamento: {
     type: DataTypes.ENUM('à vista', 'parcelado'),
     allowNull: false
