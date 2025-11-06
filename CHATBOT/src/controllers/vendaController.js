@@ -1,20 +1,16 @@
 import sendMessage from "../services/messageSender.js";
 import { VendaService } from "../../../BANCO/src/services/vendaService.js";
 
-//NÃO É COMPRA! É VENDA!!!!! MUDA ISSO!!!!!
-
 export class VendaController {
     constructor() {
         this.vendaService = new VendaService();
     }
 
-    //processar vendas
     async processarVenda(socket, text, from) {
         try {
             console.log('🛒 Processando Venda...');
 
-            // Extrai dados da mensagem
-            const { nomeCliente, valor, parcelas, produto, diaVencimento } = this.extrairDadosVenda(text);
+            const { nomeCliente, valor, parcelas, diaVencimento } = this.extrairDadosVenda(text);
 
             if (!nomeCliente || !valor) {
                 await sendMessage(socket, from,
@@ -28,9 +24,8 @@ export class VendaController {
 
             console.log('📋 Venda detectada:', { nomeCliente, valor, parcelas, diaVencimento });
 
-            //SALVAR NO BANCO DEPOIS!!!!!!!!!
             const { venda, cliente } = await this.vendaService.criarVenda(
-                nomeCliente, valor, parcelas, produto
+                nomeCliente, valor, parcelas
             );
 
             let resposta = `✅ *Venda registrada!*\n\n`;
@@ -53,33 +48,22 @@ export class VendaController {
         }
     }
 
-    // ✅ EXTRAIR DADOS DA VENDA
     extrairDadosVenda(text) {
-        // Exemplo: "Maria Silva comprou 400, 3 parcelas, vencimento 10"
 
-        // Nome (tudo antes de "comprou")
         const nomeMatch = text.match(/(.+?)\s+(comprou|venda|compra)/i);
         const nomeCliente = nomeMatch ? nomeMatch[1].trim() : null;
 
-        // Valor
         const valorMatch = text.match(/(\d+(?:[.,]\d+)?)/);
         const valor = valorMatch ? parseFloat(valorMatch[1].replace(',', '.')) : null;
 
-        // Parcelas
         const parcelasMatch = text.match(/(\d+)\s*(x|parcela)/i);
         const parcelas = parcelasMatch ? parseInt(parcelasMatch[1]) : 1;
 
-        // Vencimento
         const vencimentoMatch = text.match(/vencimento\s*(\d+)/i);
         const diaVencimento = vencimentoMatch ? parseInt(vencimentoMatch[1]) : 10;
 
-        // Produto (opcional)
-        const produtoMatch = text.match(/,\s*([^,]+?)(?=,|$)/);
-        const produto = produtoMatch ? produtoMatch[1].trim() : '';
-
-        return { nomeCliente, valor, parcelas, produto, diaVencimento };
+        return { nomeCliente, valor, parcelas, diaVencimento };
     }
 }
 
-// ✅ EXPORT DEFAULT também
 export default VendaController;
