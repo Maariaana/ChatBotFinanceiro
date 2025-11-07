@@ -1,5 +1,6 @@
 import { connect } from "./services/connection.js";
 import { setupMessageHandler } from "./services/messageProcessor.js";
+import '../../BANCO/src/models/index.js';
 
 async function startApp() {
   try {

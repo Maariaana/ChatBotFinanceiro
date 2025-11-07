@@ -1,5 +1,5 @@
 import sendMessage from "./messageSender.js";
-import processarPagamento from "../controllers/pagamentoController.js";
+import PagamentoController from "../controllers/pagamentoController.js";
 import VendaController from "../controllers/vendaController.js";
 
 //processar mensagens
@@ -29,15 +29,16 @@ function extractText(message) {
 async function processarMensagemNatural(socket, text, from) {
     const mensagem = text.toLowerCase();
 
-    // VENDA
+    //VENDA
     if (mensagem.includes('comprou') || mensagem.includes('venda') || mensagem.includes('compra')) {
         const vendaController = new VendaController();
-        await vendaController.processarVenda(socket, text, from); // ✅ MÉTODO CORRETO
+        await vendaController.processarVenda(socket, text, from);
     }
 
     //PAGAMENTO
     else if (mensagem.includes('pagou') || mensagem.includes('pagamento') || mensagem.includes('pago')) {
-        await processarPagamento(socket, text, from);
+        const pagamentoController = new PagamentoController();
+        await pagamentoController.processarPagamento(socket, text, from);
     }
 
     //Saudação
