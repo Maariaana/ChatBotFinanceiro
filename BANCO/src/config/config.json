@@ -1,0 +1,6 @@
+{
+  "development": {
+    "dialect": "sqlite",
+    "storage": "./BANCO/database/loja_teste.db"
+  }
+}
