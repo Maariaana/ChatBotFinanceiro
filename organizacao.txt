@@ -1,0 +1,36 @@
+git checkout -b feature/NOME-DA-FEATURE     ---- para criar uma branch
+acho que git switch tambem funcionan da mesma forma
+
+------------------------------------------------------------------------
+
+para fazer commit:
+git add .CAMINHO/PASTA/ASER/COMMITADA
+git commit -m "Descrição do commit"
+git push -u origin NOME DA BRANCH
+
+------------------------------------------------------------------------
+
+para sincronizar as branchs nos dois pcs (CONFORME ESTÁ NO GITHUB):
+git checkout NOME-DA-BRANCH
+git pull origin NOME-DA-BRANCH
+
+------------------------------------------------------------------------
+
+só usa quando tiver alteração na main
+git checkout main
+git pull origin main
+
+git checkout NOME-DA-BRANCH
+git merge main           --------         é tipo trazer as novidades da main para a sua feature
+
+-----------------------------------------------------------------------
+
+pra criar uma nova feature:
+git checkout main
+git pull origin main
+
+git checkout -b feature/nome-da-feature
+
+-----------------------------------------------------------------------
+
+pra verificar a branch => git branch
